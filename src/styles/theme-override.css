@@ -1,0 +1,16 @@
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@100;300;400;500;600;700&display=swap');
+.ui,
+body,
+html {
+  font-family: 'IBM Plex Sans', sans-serif;
+}
+
+.ui.form .field > label {
+  display: block;
+  margin: 0 0 0.28571429rem 0;
+  color: rgba(0, 0, 0, 0.87);
+  font-size: 1rem;
+  font-weight: 500;
+  text-transform: none;
+}

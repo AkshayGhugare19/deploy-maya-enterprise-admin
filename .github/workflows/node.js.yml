@@ -1,0 +1,43 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and Build the application
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Install & Build
+
+# Controls when the workflow will run
+on:
+  push:
+    branches: ["deploy"] # Will run on push to the "main" branch
+
+jobs:
+  install:
+    runs-on: self-hosted # The type of runner that the job will run on
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: |
+          npm install --save --legacy-peer-deps
+
+  create-env:
+    runs-on: self-hosted
+    needs: install # Run only after the 'install' job is completed
+
+    steps:
+      - name: Create .env file
+        # Creates an '.env' file with environment variables
+        run: |
+          touch .env
+          echo VITE_API_URL=${{ secrets.VITE_API_URL }} >> .env
+          echo VITE_TRANSACTION_DEVEOPLEMENT_URL=${{ secrets.VITE_TRANSACTION_DEVEOPLEMENT_URL }} >> .env
+          echo VITE_TRANSACTION_DEVEOPLEMENT_URL_HASH=${{ secrets.VITE_TRANSACTION_DEVEOPLEMENT_URL_HASH }} >> .env
+
+  build:
+    runs-on: self-hosted
+    needs: [install, create-env] # Run only after the 'install' and 'create-env' job is completed
+
+    steps:
+      - name: Create Build
+        # Starts your node js app in 'PM2'
+        run: |
+          npm run build

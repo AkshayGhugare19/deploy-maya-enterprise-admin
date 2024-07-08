@@ -1,0 +1,38 @@
+.mobile-coupon {
+  border-radius: 16px;
+  margin: 10px;
+  background-color: white;
+}
+
+.coupun-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+
+  
+}
+.coupon-info {
+    display: flex;
+    align-items: flex-start;
+    width: 210px;
+    
+  }
+
+.coupon-detail{
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    margin-left: 15px;
+  }
+
+  .modal-btns{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin:15px
+    
+  }
+  .info{
+    margin-top: 5px;
+  }
