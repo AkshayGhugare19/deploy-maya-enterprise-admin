@@ -13,12 +13,13 @@ const AddOrderItem = ({ open, onClose, orderId }) => {
 
   const fetchProducts = async () => {
     try {
-      
+
       const response = await apiPOST('/v1/product/getAllProductsOfNoOrderItem');
+      console.log("ppp",response)
       if (response?.data?.status) {
         setProducts(response?.data?.data?.product.map(item => ({
           key: item._id,
-          text: item.name,
+          text: item.productDetails.name,
           value: item._id,
         })));
       }
@@ -43,7 +44,7 @@ const AddOrderItem = ({ open, onClose, orderId }) => {
       if (response?.data?.status) {
         onClose();
         toast.success("Order item added successfully")
-      }else{
+      } else {
         toast.error("Something went wrong")
       }
     } catch (error) {

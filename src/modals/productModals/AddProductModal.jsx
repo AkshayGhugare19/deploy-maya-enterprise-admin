@@ -17,7 +17,8 @@ const initialFormData = {
   images: [],
   discountedPrice: 0,
   brandId: '',
-  stripCapsuleQty: 0
+  stripCapsuleQty: 0,
+  productQuantity:0
 };
 const AddProductModal = ({ open, onClose, refreshProducts }) => {
   const [formData, setFormData] = useState(initialFormData);
@@ -99,7 +100,7 @@ const AddProductModal = ({ open, onClose, refreshProducts }) => {
         refreshProducts();
          // Call this function to refresh the product list
       }else{
-        toast.error(response?.data?.data?.msg)
+        toast.error(response?.data?.data?.msg || response?.data?.message || response?.data?.data)
         setLoading(false)
       }
     } catch (error) {
@@ -133,6 +134,14 @@ const AddProductModal = ({ open, onClose, refreshProducts }) => {
             label='Name'
             name='name'
             value={formData.name}
+            onChange={handleChange}
+            required
+          />
+          <Form.Input
+            label='Product Quantity'
+            name='productQuantity'
+            type='number'
+            value={formData.productQuantity}
             onChange={handleChange}
             required
           />
