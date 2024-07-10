@@ -15,12 +15,11 @@ const AddOrderItem = ({ open, onClose, orderId }) => {
     try {
 
       const response = await apiPOST('/v1/product/getAllProductsOfNoOrderItem');
-      console.log("ppp",response)
       if (response?.data?.status) {
         setProducts(response?.data?.data?.product.map(item => ({
           key: item._id,
           text: item.productDetails.name,
-          value: item._id,
+          value: item.productDetails._id,
         })));
       }
     } catch (error) {
@@ -45,7 +44,7 @@ const AddOrderItem = ({ open, onClose, orderId }) => {
         onClose();
         toast.success("Order item added successfully")
       } else {
-        toast.error("Something went wrong")
+        toast.error(response?.data?.data)
       }
     } catch (error) {
       console.error('Error adding order item:', error);

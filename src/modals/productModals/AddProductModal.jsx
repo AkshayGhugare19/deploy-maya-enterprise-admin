@@ -6,7 +6,7 @@ import MultiFileUploadInput from '../../components/FileUpload/MultiFileUpload';
 import { toast } from 'react-toastify';
 const initialFormData = {
   name: '',
-  ratings: 0,
+  avgRating: 0,
   isPrescription: false,
   price: 0,
   bannerImg: '',
@@ -89,9 +89,8 @@ const AddProductModal = ({ open, onClose, refreshProducts }) => {
         bannerImg: uploadedFileUrl,
         images :uploadMultipleUrl
       };
-
+      console.log("eeeww",formDataWithImages)
       const response = await apiPOST('/v1/product/add', formDataWithImages);
-      console.log("rrr",response)
       if (response?.data?.code===201) {
         setLoading(false);
         toast.success("Product added successfully")
@@ -155,9 +154,9 @@ const AddProductModal = ({ open, onClose, refreshProducts }) => {
           />
           <Form.Input
             label='Ratings'
-            name='ratings'
+            name='avgRating'
             type='number'
-            value={formData.ratings}
+            value={formData.avgRating}
             onChange={handleChange}
             required
           />
