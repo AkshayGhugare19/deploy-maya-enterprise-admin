@@ -2,9 +2,19 @@
     "version": 2,
     "name": "deploy-maya-enterprise-admin",
     "builds": [
-       { "src": "src/main.jsx", "use": "@vercel/node" }
+      {
+        "src": "package.json",
+        "use": "@vercel/static-build",
+        "config": {
+          "distDir": "build"
+        }
+      }
     ],
     "routes": [
-       { "src": "/(.*)", "dest": "src/main.jsx" }
+      {
+        "src": "/(.*)",
+        "dest": "/index.html"
+      }
     ]
- }
+  }
+  
