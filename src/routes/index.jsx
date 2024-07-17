@@ -15,6 +15,8 @@ import OrderList from '../pages/orders/OrderList';
 import OrderDetailsPage from '../pages/orders/OrderDetailsPage';
 import EnquiriesList from '../pages/Enquiries/EnquiriesList';
 import EnquiriesDetailAndEditPage from '../pages/Enquiries/EnquiriesDetailAndEditPage';
+import SubscriberList from '../pages/emailSubscribes/SubscriberList';
+import PaymentHistoryList from '../pages/paymentHistory/PaymentHistoryList';
 
 const Login = lazy(() => import('../modules/login'));
 
@@ -29,6 +31,8 @@ const authProtectedRoutes = [
   { path: '/dashboard/brands', component: <BrandLists /> },
   { path: '/dashboard/orders', component: <OrderList /> },
   { path: '/dashboard/enquiries', component: <EnquiriesList /> },
+  { path: '/dashboard/subscribers', component: <SubscriberList /> },
+  { path: '/dashboard/payment-history', component: <PaymentHistoryList /> },
   { path: '/dashboard/enquiry/:id', component: <EnquiriesDetailAndEditPage /> },
   { path: '/dashboard/order/:id', component: <OrderDetailsPage /> },
   { path: '/dashboard/slider', component: <SlidersPage /> },

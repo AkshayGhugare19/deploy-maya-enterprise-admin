@@ -47,6 +47,18 @@ const Menus = [
   },
   {
     type: 'menu',
+    title: 'Subscribers',
+    path: '/dashboard/subscribers',
+    icon: 'users',
+  },
+  {
+    type: 'menu',
+    title: 'Payment History',
+    path: '/dashboard/payment-history',
+    icon: 'users',
+  },
+  {
+    type: 'menu',
     title: 'Slider',
     path: '/dashboard/slider',
     icon: 'images icon',

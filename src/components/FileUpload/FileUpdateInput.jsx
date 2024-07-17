@@ -145,7 +145,7 @@ const FileUpdateInput = ({ myFileUrl, setUpdatedFileUrl }) => {
                                 <MdClose />
                             </button>
                             <img
-                                style={{ width: "70%" }}
+                                style={{ width: "50%" }}
                                 src={imageUrl}
                                 alt="Uploaded"
                             />

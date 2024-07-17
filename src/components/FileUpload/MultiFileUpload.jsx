@@ -96,95 +96,52 @@ const MultiFileUploadInput = ({ setUploadMultipleUrl }) => {
 
     return (
         <>
-            <div style={{ marginTop: "12px" }}>
+            <div className="mt-3">
+    <div className="border-2 border-dashed  border-gray-300 flex flex-wrap justify-center items-center bg-white rounded-lg p-8">
+       <div className=" flex gap-2 items-center justify-center overflow-auto w-[850px]">
+       {imageUrls.length > 0 && !loading ? (
+            imageUrls.map((imageUrl, index) => (
+                <div key={index} className="flex flex-col items-center mb-3 mx-3 over">
+                    <div className="relative flex justify-center items-center w-36 h-36 border-2 border-gray-300 rounded-lg ">
+                        <button
+                            disabled={loading}
+                            className="absolute top-1 right-1 text-white bg-black rounded-full p-1"
+                            onClick={() => removeImage(index)}
+                        >
+                            <MdClose />
+                        </button>
+                        <img className="w-4/5 h-4/5 object-cover" src={imageUrl} alt="uploaded" />
+                    </div>
+                </div>
+            ))
+        ) : (
+            <div className="text-center">
+                <div className="fallback">
+                    <input disabled={loading} {...getInputProps()} />
+                </div>
                 <div
-                    style={{
-                        border: "2px dashed #d3d3d3",
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        backgroundColor: "white",
-                        borderRadius: "5px",
-                        padding: "30px",
-                    }}
+                    className="dz-message needsclick cursor-pointer"
+                    {...getRootProps({ className: 'dropzone' })}
                 >
-                    {imageUrls.length > 0 && !loading ? (
-                        imageUrls.map((imageUrl, index) => (
-                            <div
-                                key={index}
-                                style={{
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    flexDirection: "column",
-                                    alignItems: "center",
-                                    marginBottom: "10px",
-                                }}
-                            >
-                                <div
-                                    className="box text-center"
-                                    style={{
-                                        display: "flex",
-                                        justifyContent: "center",
-                                        width: "150px",
-                                        maxHeight: "150px",
-                                        position: "relative",
-                                    }}
-                                >
-                                    <button
-                                        disabled={loading}
-                                        className="circular ui icon button"
-                                        style={{
-                                            position: "absolute",
-                                            top: "0px",
-                                            right: "0px",
-                                        }}
-                                        onClick={() => {
-                                            removeImage(index);
-                                        }}
-                                    >
-                                        <MdClose />
-                                    </button>
-                                    <img
-                                        style={{ width: "70%" }}
-                                        src={imageUrl}
-                                        alt="uploaded"
-                                    />
+                    {loading ? (
+                        <div className="text-gray-500">
+                            Uploading {uploadProgress.map(p => (
+                                <div key={p.file}>
+                                    {p.file}: {p.progress} %
                                 </div>
-                            </div>
-                        ))
-                    ) : (
-                        <div>
-                            <div className="fallback">
-                                <input
-                                    disabled={loading}
-                                    {...getInputProps()}
-                                />
-                            </div>
-                            <div
-                                className="dz-message needsclick"
-                                {...getRootProps({ className: "dropzone" })}
-                                style={{ cursor: "pointer" }}
-                            >
-                                {loading ? (
-                                    <div style={{ color: "#9D9D9D" }}>
-                                        Uploading {uploadProgress.map(p => (
-                                            <div key={p.file}>
-                                                {p.file}: {p.progress} %
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <h5>
-                                        Drop Multiple Image files here or click to
-                                        upload.
-                                    </h5>
-                                )}
-                            </div>
+                            ))}
                         </div>
+                    ) : (
+                        <h5 className="cursor-pointer">
+                            Drop Multiple Image files here or click to upload.
+                        </h5>
                     )}
                 </div>
             </div>
+        )}
+       </div>
+    </div>
+</div>
         </>
     );
 };

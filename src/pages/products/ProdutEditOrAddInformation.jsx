@@ -42,6 +42,7 @@ const ProdutEditOrAddInformation = () => {
       driving: '',
     },
   });
+  console.log("rrr",productForm?.images)
   const [showMoreInfo, setShowMoreInfo] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -50,7 +51,7 @@ const ProdutEditOrAddInformation = () => {
   const [brands, setBrands] = useState([]);
   const [updatedFileUrl,setUpdatedFileUrl]=useState("");
   const [updatedMultipleFileUrl,setUpdateMultipleUrl]=useState([]);
-  useEffect(() => {
+ 
     const fetchProductData = async () => {
       try {
         setLoading(true);
@@ -66,10 +67,7 @@ const ProdutEditOrAddInformation = () => {
       }
     };
 
-    if (id) {
-      fetchProductData();
-    }
-  }, [id]);
+
 
   const handleProductChange = (e, { name, value, checked }) => {
     setProductForm((prevProductForm) => ({
@@ -256,9 +254,14 @@ const ProdutEditOrAddInformation = () => {
     }));
   };
 
+useEffect(()=>{
+  fetchProductData()
+},[id])
+
   useEffect(() => {
     fetchCategories();
   }, []);
+  
 
   if (loading) {
     return <div>Loading...</div>;

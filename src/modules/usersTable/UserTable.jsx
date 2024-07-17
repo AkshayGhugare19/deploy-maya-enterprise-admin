@@ -5,13 +5,13 @@ import UpdateUserModal from '../../modals/userModals/UpdateUserModal'
 import { useNavigate } from 'react-router-dom';
 
 const UserTable = ({ users, currentPage, totalPages, onPageChange, loading,fetchUsers }) => {
-    console.log("ggfdf",users)
     const navigate = useNavigate()
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
     const [updateModalOpen, setUpdateModalOpen] = useState(false);
     
 const handleDeleteUser = (item) => {
+    console.log("ggfdf",item)
     setDeleteModalOpen(true);
     setSelectedUser(item);
 };
@@ -62,7 +62,7 @@ const closeUpdateModal = () => {
                                 <Table.Cell>{item?.phoneNo}</Table.Cell>
                                 <Table.Cell>
                                     <Button icon='eye' onClick={() => navigate(`/dashboard/user/${item?.id}`)} />
-                                    <Button icon='edit' onClick={() => handleUpdateUser(item)} />
+                                    {/* <Button icon='edit' onClick={() => handleUpdateUser(item)} /> */}
                                     <Button negative icon='delete' onClick={() => handleDeleteUser(item)} />
                                         
                                 </Table.Cell>
@@ -88,13 +88,7 @@ const closeUpdateModal = () => {
                     </Table.Row>
                 </Table.Footer>
             </Table>
-            {deleteModalOpen && (
-                <DeleteUserModal
-                    open={deleteModalOpen}
-                    onClose={closeDeleteModal}
-                    selectedUser={selectedUser}
-                />
-            )}
+            
             {updateModalOpen && (
                 <UpdateUserModal
                     open={updateModalOpen}
@@ -103,7 +97,13 @@ const closeUpdateModal = () => {
                     refreshUsers={fetchUsers}
                 />
             )}
-           
+           {deleteModalOpen && (
+                <DeleteUserModal
+                    deleteModalOpen={deleteModalOpen}
+                    closeDeleteModal={closeDeleteModal}
+                    selectedUser={selectedUser}
+                />
+            )}
         </div>
     );
 };

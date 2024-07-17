@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Form, Button, Icon, Divider } from 'semantic-ui-react';
-import axios from 'axios';
-import FileUploadInput from '../../components/FileUpload/FileUploadInput';
+import { Modal, Form, Button, Message } from 'semantic-ui-react';
 import { apiPOST } from '../../utils/apiHelper';
 import { toast } from 'react-toastify';
 
@@ -10,60 +8,73 @@ const AddCategoriesModal = ({ open, onClose, refreshCategories }) => {
     name: '',
     description: '',
   });
-  const [fileInfo,setFileInfo]=useState("")
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-console.log("eee",fileInfo)
+
   const handleChange = (e, { name, value }) => {
     setFormData({ ...formData, [name]: value });
+    setErrors({ ...errors, [name]: '' }); // Clear the error for the current field
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.name) {
+      newErrors.name = 'Name is required';
+    }
+    if (!formData.description) {
+      newErrors.description = 'Description is required';
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
     setLoading(true);
     try {
-        console.log("FOORRRMM",{ ...formData, 
-        })
-        
-     const response =  await apiPOST('/v1/category/add', formData);
-     if(response?.data?.status){
-        setLoading(false)
+      const response = await apiPOST('/v1/category/add', formData);
+      if (response?.data?.status) {
+        toast.success('Category added successfully');
+        setFormData({name:'', description:''})
+        onClose(); // Call this function to refresh the category list
+        refreshCategories();
+      } else {
+        toast.error(response?.data?.data || "Something went wrong");
         onClose();
-        toast.success("Added category")
-        refreshCategories(); // Call this function to refresh the product list
-     }else{
-      toast.error("Failed to add category")
-     }
+      }
     } catch (error) {
-      console.error('Error adding product:', error);
-      setLoading(false)
-      refreshCategories()
+      console.error('Error adding category:', error);
+      toast.error('Failed to add category');
+    } finally {
+      setLoading(false);
+      setFormData({name:'', description:''})
+
     }
   };
 
   return (
-    <Modal open={open} onClose={onClose} size='small' closeIcon>
-      <Modal.Header>
-        Add a New Categories
-        {/* <Icon name='close' onClick={onClose} style={{ cursor: 'pointer', float: 'right' }} /> */}
-      </Modal.Header>
+    <Modal open={open} onClose={onClose} size='tiny' closeIcon>
+      <Modal.Header>Add a New Category</Modal.Header>
       <Modal.Content>
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={e => { e.preventDefault(); handleSubmit(); }}>
           <Form.Input
             label='Name'
             name='name'
             value={formData.name}
             onChange={handleChange}
-            required
+            error={errors.name ? { content: errors.name, pointing: 'below' } : null}
           />
-         
           <Form.Input
-            label='Marketer'
+            label='Description'
             name='description'
             value={formData.description}
             onChange={handleChange}
+            error={errors.description ? { content: errors.description, pointing: 'below' } : null}
           />
-         
-          <Button type='submit' primary loading={loading}>Add Categories</Button>
+          <Button type='submit' primary loading={loading}>Add Category</Button>
         </Form>
       </Modal.Content>
     </Modal>

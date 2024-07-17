@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { Button, Modal } from "semantic-ui-react";
 import { apiPUT } from "../../utils/apiHelper";
 
-const DeleteUserModal = ({ deleteModalOpen, deleteModalClose, selectedUser }) => {
+const DeleteUserModal = ({ deleteModalOpen, closeDeleteModal, selectedUser }) => {
     console.log("Delete User Modal", selectedUser);
     const [loading,setLoading] = useState(false)
     
@@ -13,14 +13,17 @@ const DeleteUserModal = ({ deleteModalOpen, deleteModalClose, selectedUser }) =>
           const response = await apiPUT(`/v1/users/delete-profile/${selectedUser?.id}`);
           if(response?.data?.status){
               setLoading(false)
-              deleteModalClose();
+              toast.success("User deleted successfully")
+              closeDeleteModal();
           }else{
-            deleteModalClose();
+            closeDeleteModal();
+            toast.error("Something went wrong")
+
           }
         } catch (error) {
           console.error('Error fetching users:', error);
           setLoading(false)
-          deleteModalClose();
+          closeDeleteModal();
         }
     };
 
@@ -31,7 +34,7 @@ const DeleteUserModal = ({ deleteModalOpen, deleteModalClose, selectedUser }) =>
                 <p>Are you sure you want to delete the user <strong>{selectedUser?.name?selectedUser?.name:""}</strong>?</p>
             </Modal.Content>
             <Modal.Actions>
-                <Button onClick={deleteModalClose}>Cancel</Button>
+                <Button onClick={()=>closeDeleteModal()}>Cancel</Button>
                 <Button negative loading={loading} onClick={()=>handleDelete()}>Delete</Button>
             </Modal.Actions>
         </Modal>
