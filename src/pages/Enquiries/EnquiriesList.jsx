@@ -9,6 +9,11 @@ const EnquiriesList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [searchQuery,setSearchQuery] = useState('')
+
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value)
+  }
 
   const fetchOrders = async () => {
     try {
@@ -16,6 +21,7 @@ const EnquiriesList = () => {
       const payload = {
         page:currentPage,
         limit: 10,
+        searchQuery:searchQuery
       };
       const response = await apiPOST(`/v1/order/all-enquiries`, payload);
       setEnquires(response?.data?.data?.data || []);
@@ -33,7 +39,7 @@ const EnquiriesList = () => {
 
   useEffect(() => {
     fetchOrders();
-  }, [currentPage]);
+  }, [currentPage,searchQuery]);
 
   return (
     <div>
@@ -44,6 +50,8 @@ const EnquiriesList = () => {
         onPageChange={handlePageChange}
         loading={loading}
         fetchOrders={fetchOrders}
+        searchQuery={searchQuery}
+        handleSearch={handleSearch}
       />
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Pagination, Loader, Dropdown } from 'semantic-ui-react';
+import { Table, Button, Pagination, Loader, Dropdown, Input } from 'semantic-ui-react';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import StatusBadgeForTable from '../../layouts/StatusBadgeForTable';
@@ -7,7 +7,7 @@ import axios from 'axios';
 import { apiPUT } from '../../utils/apiHelper';
 import { toast } from 'react-toastify';
 
-const EnquiriesTable = ({ enquiries, currentPage, totalPages, onPageChange, loading, fetchOrders }) => {
+const EnquiriesTable = ({ enquiries, currentPage, totalPages, onPageChange, loading, fetchOrders,searchQuery,handleSearch }) => {
     const navigate = useNavigate();
     const [updating, setUpdating] = useState(false);
     console.log("ee",enquiries)
@@ -44,6 +44,7 @@ const EnquiriesTable = ({ enquiries, currentPage, totalPages, onPageChange, load
 
     return (
         <div className='w-full p-4'>
+            <div><Input placeholder="Serach by name or phone number " value={searchQuery} onChange={handleSearch}/></div>
             <Table celled>
                 <Table.Header>
                     <Table.Row>

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Table, Button, Pagination, Loader } from 'semantic-ui-react';
+import { Table, Button, Pagination, Loader, Input } from 'semantic-ui-react';
 import DeleteCategoriesModal from '../../modals/categoriesModals/DeleteCategoriesModal';
 import UpdateCategoriesModal from '../../modals/categoriesModals/UpdateCategoriesModal';
 
-const CategoriesTable = ({ categories, onAddCategoriesClick, currentPage, totalPages, onPageChange, loading,fetchCategories }) => {
+const CategoriesTable = ({ categories, onAddCategoriesClick, currentPage, totalPages, onPageChange, loading,fetchCategories,searchQuery,handleSearch }) => {
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [updateModalOpen, setUpdateModalOpen] = useState(false);
     const [selectedCategories, setSelectedCategories] = useState(null);
@@ -31,7 +31,9 @@ const CategoriesTable = ({ categories, onAddCategoriesClick, currentPage, totalP
 
     return (
         <div className='w-full px-4'>
-            <div className='flex justify-end mt-4'>
+            <div className='flex justify-between items-center mt-4'>
+            <div><Input placeholder="Serach by name or phone number " value={searchQuery} onChange={handleSearch}/></div>
+
                 <Button primary onClick={onAddCategoriesClick}>Add Categories</Button>
             </div>
 

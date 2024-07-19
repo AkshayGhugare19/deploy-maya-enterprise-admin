@@ -25,7 +25,23 @@ const UpdateCategoriesModal = ({ updateModalOpen, updateModalClose, selectedCate
     setCategoryData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+  const countWords = (str) => {
+    return str.trim().split(/\s+/).length;
+  };
+
   const handleUpdate = async () => {
+    if (!categoryData.name) {
+      setError('Name is required');
+      return;
+    }
+    if (!categoryData.description) {
+      setError('Description is required');
+      return;
+    } else if (countWords(categoryData.description) > 100) {
+      setError('Description must be 100 words or less');
+      return;
+    }
+
     setLoading(true);
     setError(null);
     setSuccess(null);
@@ -66,6 +82,7 @@ const UpdateCategoriesModal = ({ updateModalOpen, updateModalClose, selectedCate
             name='description'
             value={categoryData.description}
             onChange={handleInputChange}
+            error={error && error.includes('Description') ? { content: error, pointing: 'below' } : null}
           />
         </Form>
       </Modal.Content>

@@ -16,6 +16,10 @@ const AddCategoriesModal = ({ open, onClose, refreshCategories }) => {
     setErrors({ ...errors, [name]: '' }); // Clear the error for the current field
   };
 
+  const countWords = (str) => {
+    return str.trim().split(/\s+/).length;
+  };
+
   const validateForm = () => {
     const newErrors = {};
     if (!formData.name) {
@@ -23,6 +27,8 @@ const AddCategoriesModal = ({ open, onClose, refreshCategories }) => {
     }
     if (!formData.description) {
       newErrors.description = 'Description is required';
+    } else if (countWords(formData.description) > 100) {
+      newErrors.description = 'Description must be 100 words or less';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -38,7 +44,7 @@ const AddCategoriesModal = ({ open, onClose, refreshCategories }) => {
       const response = await apiPOST('/v1/category/add', formData);
       if (response?.data?.status) {
         toast.success('Category added successfully');
-        setFormData({name:'', description:''})
+        setFormData({ name: '', description: '' });
         onClose(); // Call this function to refresh the category list
         refreshCategories();
       } else {
@@ -50,8 +56,7 @@ const AddCategoriesModal = ({ open, onClose, refreshCategories }) => {
       toast.error('Failed to add category');
     } finally {
       setLoading(false);
-      setFormData({name:'', description:''})
-
+      setFormData({ name: '', description: '' });
     }
   };
 

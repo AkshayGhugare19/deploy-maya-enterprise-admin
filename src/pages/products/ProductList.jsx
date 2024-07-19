@@ -10,13 +10,17 @@ const ProductList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [searchQuery,setSearchQuery] = useState('')
 
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value)
+  }
 
   const fetchProducts = async () => {
     try {
         setLoading(true)
        const payload= {
-            "sortIndex":"",
+            "searchQuery":searchQuery,
             "limit":10,
             "page":currentPage
         }
@@ -37,8 +41,9 @@ const ProductList = () => {
 
   useEffect(() => {
     fetchProducts();
-  }, [currentPage]);
-
+  }, [currentPage,searchQuery]);
+  
+ 
   return (
     <div>
       <ProductTable
@@ -49,6 +54,8 @@ const ProductList = () => {
         onPageChange={handlePageChange}
         loading={loading}
         fetchProducts={fetchProducts}
+        searchQuery={searchQuery}
+        handleSearch={handleSearch}
       />
       <AddProductModal
         open={open}

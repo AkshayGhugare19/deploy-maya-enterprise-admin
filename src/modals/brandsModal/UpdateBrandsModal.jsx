@@ -5,15 +5,16 @@ import FileUpdateInput from "../../components/FileUpload/FileUpdateInput";
 import { toast } from "react-toastify";
 
 const UpdateBrandsModal = ({ updateModalOpen, updateModalClose, selectedBrands, refreshBrands }) => {
-  console.log("wwwwww>>>><<<",selectedBrands?.brandImgUrl)
+  console.log("wwwwww>>>><<<", selectedBrands?.brandImgUrl);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     categoryId: [],
   });
-  const [updatedFileUrl,setUpdatedFileUrl]=useState('')
+  const [updatedFileUrl, setUpdatedFileUrl] = useState("");
   const [categories, setCategories] = useState([]);
+  const [errors, setErrors] = useState({});
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
@@ -46,33 +47,60 @@ const UpdateBrandsModal = ({ updateModalOpen, updateModalClose, selectedBrands, 
 
   const handleInputChange = (e, { name, value }) => {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: '' })); // Clear the error for the current field
   };
 
   const handleCategoryChange = (e, { value }) => {
     console.log("Selected Categories:", value);
     setFormData((prevData) => ({ ...prevData, categoryId: value }));
+    setErrors((prevErrors) => ({ ...prevErrors, categoryId: '' })); // Clear the category error
+  };
+
+  const countWords = (str) => {
+    return str.trim().split(/\s+/).length;
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.name) {
+      newErrors.name = 'Name is required';
+    }
+    if (!formData.description) {
+      newErrors.description = 'Description is required';
+    } else if (countWords(formData.description) > 100) {
+      newErrors.description = 'Description must be 100 words or less';
+    }
+    if (formData.categoryId.length === 0) {
+      newErrors.categoryId = 'Category is required';
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleUpdate = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
     setLoading(true);
     setError(null);
     setSuccess(null);
     try {
-      const paylod={
-        name: formData?.name,
-        description: formData?.description,
-        categoryId: formData?.categoryId,
-        brandImgUrl:updatedFileUrl || selectedBrands?.brandImgUrl,
-      }
-      const response = await apiPUT(`/v1/Brand/update/${selectedBrands?.id}`, paylod);
+      const payload = {
+        name: formData.name,
+        description: formData.description,
+        categoryId: formData.categoryId,
+        brandImgUrl: updatedFileUrl || selectedBrands?.brandImgUrl,
+      };
+      const response = await apiPUT(`/v1/Brand/update/${selectedBrands?.id}`, payload);
       if (response?.data?.status) {
         setSuccess("Brand updated successfully!");
         toast.success("Brand updated successfully!");
         updateModalClose();
         refreshBrands();
       } else {
-        toast.error("Brand updated successfully!");
         setError("Failed to update Brand.");
+        toast.error("Failed to update Brand.");
       }
     } catch (error) {
       console.error('Error updating Brand:', error);
@@ -104,6 +132,7 @@ const UpdateBrandsModal = ({ updateModalOpen, updateModalClose, selectedBrands, 
               options={categories}
               onChange={handleCategoryChange}
               value={formData.categoryId}
+              error={errors.categoryId ? { content: errors.categoryId, pointing: 'below' } : null}
             />
           </Form.Field>
           <Form.Input
@@ -111,12 +140,14 @@ const UpdateBrandsModal = ({ updateModalOpen, updateModalClose, selectedBrands, 
             name='name'
             value={formData.name}
             onChange={handleInputChange}
+            error={errors.name ? { content: errors.name, pointing: 'below' } : null}
           />
           <Form.Input
             label='Description'
             name='description'
             value={formData.description}
             onChange={handleInputChange}
+            error={errors.description ? { content: errors.description, pointing: 'below' } : null}
           />
         </Form>
       </Modal.Content>

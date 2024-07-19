@@ -11,6 +11,11 @@ const SubscriberList = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
+  const [seacrhQuery,setSearchQuery] = useState('')
+
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value)
+  }
 
   const handleToggle = () => {
     setSubscribed((prevSubscribed) => {
@@ -24,11 +29,10 @@ const SubscriberList = () => {
     try {
       setLoading(true);
       const payload = {
-        page: currentPage,
-        limit: 10,
-        name: "",
-        email: ""
-      };
+        "page" : currentPage,
+        "limit" :10,
+        "searchQuery":seacrhQuery
+    }
       const endpoint = isSubscribed ? 'v1/email-subscribe/get-all' : 'v1/email-subscribe/get-all/unsubscriber';
       const response = await apiPOST(endpoint, payload);
       console.log("Subscribers res", response?.data?.data?.data);
@@ -47,7 +51,7 @@ const SubscriberList = () => {
 
   useEffect(() => {
     fetchSubscriber(!subscribed);
-  }, [currentPage, subscribed]);
+  }, [currentPage, subscribed,seacrhQuery]);
 
   return (
     <div>
@@ -61,6 +65,8 @@ const SubscriberList = () => {
         fetchSubscriber={fetchSubscriber}
         subscribed={subscribed}
         handleToggle={handleToggle}
+        seacrhQuery={seacrhQuery}
+        handleSearch={handleSearch}
       />
       <AddSubscriberModal
         open={open}

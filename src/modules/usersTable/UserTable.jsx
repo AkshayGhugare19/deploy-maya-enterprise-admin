@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Table, Button, Pagination, Loader } from 'semantic-ui-react';
+import { Table, Button, Pagination, Loader, Input } from 'semantic-ui-react';
  import DeleteUserModal from '../../modals/userModals/DeleteUserModal';
 import UpdateUserModal from '../../modals/userModals/UpdateUserModal'
 import { useNavigate } from 'react-router-dom';
 
-const UserTable = ({ users, currentPage, totalPages, onPageChange, loading,fetchUsers }) => {
+const UserTable = ({ users, currentPage, totalPages, onPageChange, loading,fetchUsers,seacrhQuery,handleSearch }) => {
     const navigate = useNavigate()
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
@@ -36,6 +36,7 @@ const closeUpdateModal = () => {
 
     return (
         <div className='w-full p-4'>
+            <div><Input placeholder="Serach by name or email" value={seacrhQuery} onChange={handleSearch}/></div>
             <Table celled>
                 <Table.Header>
                     <Table.Row>

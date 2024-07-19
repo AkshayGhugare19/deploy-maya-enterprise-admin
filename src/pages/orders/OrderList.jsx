@@ -8,13 +8,18 @@ const OrderList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [seacrhQuery,setSearchQuery] = useState('')
 
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value)
+  }
   const fetchOrders = async () => {
     try {
       setLoading(true);
       const payload = {
         page:currentPage,
         limit: 10,
+        searchQuery:seacrhQuery
       };
       const response = await apiPOST(`/v1/order/all`, payload);
       setOrders(response?.data?.data?.data || []);
@@ -32,7 +37,7 @@ const OrderList = () => {
 
   useEffect(() => {
     fetchOrders();
-  }, [currentPage]);
+  }, [currentPage,seacrhQuery]);
 
   return (
     <div>
@@ -42,6 +47,8 @@ const OrderList = () => {
         totalPages={totalPages}
         onPageChange={handlePageChange}
         loading={loading}
+        seacrhQuery={seacrhQuery}
+        handleSearch={handleSearch}
       />
     </div>
   );

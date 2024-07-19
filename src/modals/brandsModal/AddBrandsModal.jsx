@@ -39,7 +39,10 @@ const AddBrandsModal = ({ open, onClose, refreshBrands }) => {
     setFormData({ ...formData, categoryId: value });
     setErrors({ ...errors, categoryId: '' }); // Clear the category error
   };
-
+   
+  const countWords = (str) => {
+    return str.trim().split(/\s+/).length;
+  };
   const validateForm = () => {
     const newErrors = {};
     if (!formData.name) {
@@ -47,6 +50,8 @@ const AddBrandsModal = ({ open, onClose, refreshBrands }) => {
     }
     if (!formData.description) {
       newErrors.description = 'Description is required';
+    } else if (countWords(formData.description) > 100) {
+      newErrors.description = 'Description must be 100 words or less';
     }
     if (formData.categoryId.length === 0) {
       newErrors.categoryId = 'Category is required';

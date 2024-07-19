@@ -15,7 +15,10 @@ const AddOrderItem = ({ open, onClose, orderId }) => {
 
   const fetchProducts = async () => {
     try {
-      const response = await apiPOST('/v1/product/getAllProductsOfNoOrderItem');
+      const payload = {
+        orderId
+      }
+      const response = await apiPOST('/v1/product/getAllProductsOfNoOrderItem', payload);
       if (response?.data?.status) {
         setProducts(response?.data?.data?.product.map(item => ({
           key: item._id,
@@ -82,7 +85,7 @@ const AddOrderItem = ({ open, onClose, orderId }) => {
     setLoading(false);
   };
 
-  
+
   useEffect(() => {
     if (open) {
       fetchProducts();
@@ -107,7 +110,7 @@ const AddOrderItem = ({ open, onClose, orderId }) => {
               options={products}
               onChange={(e, data) => handleChange(e, { name: 'productId', value: data.value })}
               value={formData.productId}
-              
+
             />
             {errors.productId && <div className='text-red-500'>{errors.productId}</div>}
           </Form.Field>

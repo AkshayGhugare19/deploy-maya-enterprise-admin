@@ -11,7 +11,11 @@ const PaymentHistoryList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [seacrhQuery,setSearchQuery] = useState('')
 
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value)
+  }
 
   const fetchPaymentHistory = async () => {
     try {
@@ -19,13 +23,12 @@ const PaymentHistoryList = () => {
         const payload = {
           "page" : currentPage,
           "limit" :10,
-          "name": "",
-          "email": ""
+          "searchQuery":seacrhQuery
       }
       const response = await apiPOST(`v1/payment-history/get-all`,payload);
       console.log( "Payment history res",response?.data?.data?.data)
-      setPaymentHistory(response?.data?.data?.data);
-      // setTotalPages(response?.data?.data?.pagination?.totalPages);
+      setPaymentHistory(response?.data?.data?.data?.data);
+      setTotalPages(response?.data?.data?.data?.totalPages);
       setLoading(false)
     } catch (error) {
       console.error('Error fetching paymentHistory:', error);
@@ -39,7 +42,8 @@ const PaymentHistoryList = () => {
 
   useEffect(() => {
     fetchPaymentHistory();
-  }, [currentPage]);
+  }, [currentPage,seacrhQuery]);
+  
 
   return (
     <div>
@@ -49,6 +53,8 @@ const PaymentHistoryList = () => {
         totalPages={totalPages}
         onPageChange={handlePageChange}
         loading={loading}
+        seacrhQuery={seacrhQuery}
+        handleSearch={handleSearch}
       />
      
     </div>

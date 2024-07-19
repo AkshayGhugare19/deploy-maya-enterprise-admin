@@ -10,15 +10,24 @@ const CategoriesList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [searchQuery,setSearchQuery] = useState('')
 
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value)
+  }
 
   const fetchCategories = async () => {
     try {
         setLoading(true)
-      const response = await apiGET(`v1/category/all`);
+        const payload = {
+          "page":currentPage,
+          "limit": 10,
+          "searchQuery":searchQuery
+      }
+      const response = await apiPOST(`v1/category/all`,payload);
       console.log( "Categories res",response?.data?.data)
-      setCategories(response?.data?.data);
-      // setTotalPages(response?.data?.data?.pagination?.totalPages);
+      setCategories(response?.data?.data?.categories);
+      setTotalPages(response?.data?.data?.totalPages);
       setLoading(false)
     } catch (error) {
       console.error('Error fetching categories:', error);
@@ -32,7 +41,7 @@ const CategoriesList = () => {
 
   useEffect(() => {
     fetchCategories();
-  }, [currentPage]);
+  }, [currentPage,searchQuery]);
 
   return (
     <div>
@@ -44,6 +53,8 @@ const CategoriesList = () => {
         onPageChange={handlePageChange}
         loading={loading}
         fetchCategories={fetchCategories}
+        searchQuery={searchQuery}
+        handleSearch={handleSearch}
       />
       <AddCategoriesModal
         open={open}

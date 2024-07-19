@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Table, Button, Pagination, Loader } from 'semantic-ui-react';
+import { Table, Button, Pagination, Loader, Input } from 'semantic-ui-react';
 import DeleteProductModal from '../../modals/productModals/DeleteProductModal';
 import { useNavigate } from 'react-router-dom';
 import OrderDeleteModal from '../../modals/ordersModal/OrderDeleteModal';
 import moment from 'moment';
 import StatusBadgeForTable from '../../layouts/StatusBadgeForTable';
 
-const OrdersTable = ({ orders, currentPage, totalPages, onPageChange, loading,fetchOrders }) => {
+const OrdersTable = ({ orders, currentPage, totalPages, onPageChange, loading,fetchOrders,seacrhQuery,handleSearch }) => {
    console.log('orders',orders)
     const navigate = useNavigate()
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -25,6 +25,7 @@ const OrdersTable = ({ orders, currentPage, totalPages, onPageChange, loading,fe
 
     return (
         <div className='w-full p-4'>
+            <div><Input placeholder="Serach by name or phone number" value={seacrhQuery} onChange={handleSearch}/></div>
             <Table celled>
                 <Table.Header>
                     <Table.Row>

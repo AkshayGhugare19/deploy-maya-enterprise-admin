@@ -10,15 +10,25 @@ const BrandLists = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [searchQuery,setSearchQuery] = useState('')
+
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value)
+  }
 
 
   const fetchBrands = async () => {
     try {
         setLoading(true)
-      const response = await apiGET(`v1/brand/all`);
+        const payload = {
+          "page":currentPage,
+          "limit": 10,
+          "searchQuery":searchQuery
+      }
+      const response = await apiPOST(`v1/brand/all`,payload);
       console.log( "Brands res",response?.data?.data)
-      setBrands(response?.data?.data);
-      // setTotalPages(response?.data?.data?.pagination?.totalPages);
+      setBrands(response?.data?.data?.brands);
+      setTotalPages(response?.data?.data?.totalPages);
       setLoading(false)
     } catch (error) {
       console.error('Error fetching brands:', error);
@@ -32,7 +42,7 @@ const BrandLists = () => {
 
   useEffect(() => {
     fetchBrands();
-  }, [currentPage]);
+  }, [currentPage,searchQuery]);
 
   return (
     <div>
@@ -44,6 +54,8 @@ const BrandLists = () => {
         onPageChange={handlePageChange}
         loading={loading}
         fetchBrands={fetchBrands}
+        searchQuery={searchQuery}
+        handleSearch={handleSearch}
       />
       <AddBrandsModal
         open={open}

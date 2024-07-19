@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Table, Button, Pagination, Loader } from 'semantic-ui-react';
+import { Table, Button, Pagination, Loader, Input } from 'semantic-ui-react';
 import DeleteBrandsModal from '../../modals/brandsModal/DeleteBrandsModal';
 import UpdateBrandsModal from '../../modals/brandsModal/UpdateBrandsModal';
 
-const BrandsTable = ({ brands, onAddCategoriesClick, currentPage, totalPages, onPageChange, loading, fetchBrands }) => {
+const BrandsTable = ({ brands, onAddCategoriesClick, currentPage, totalPages, onPageChange, loading, fetchBrands,searchQuery,handleSearch }) => {
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [updateModalOpen, setUpdateModalOpen] = useState(false);
     const [selectedBrands, setSelectedBrands] = useState(null);
@@ -31,7 +31,9 @@ const BrandsTable = ({ brands, onAddCategoriesClick, currentPage, totalPages, on
 
     return (
         <div className='w-full px-4'>
-            <div className='flex justify-end mt-4'>
+            <div className='flex justify-between items-center mt-4'>
+            <div><Input placeholder="Serach by brnad name  " value={searchQuery} onChange={handleSearch}/></div>
+
                 <Button primary onClick={onAddCategoriesClick}>Add Brand</Button>
             </div>
 
@@ -68,8 +70,10 @@ const BrandsTable = ({ brands, onAddCategoriesClick, currentPage, totalPages, on
                                 <Table.Cell>{item.description}</Table.Cell>
                                 <Table.Cell>{item.active ? "Active" : "Not Active"}</Table.Cell>
                                 <Table.Cell>
+                                <div style={{ display: 'flex', justifyContent: '' }}>
                                     <Button positive icon='edit' onClick={() => handleUpdateCategories(item)} />
                                     <Button negative icon='delete' onClick={() => handleDeleteCategories(item)} />
+                            </div>
                                 </Table.Cell>
                             </Table.Row>
                         )) : (

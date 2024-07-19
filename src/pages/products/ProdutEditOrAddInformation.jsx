@@ -23,6 +23,7 @@ const ProdutEditOrAddInformation = () => {
     brandId: '',
     discountedPrice: '',
     stripCapsuleQty: '',
+    productQuantity:''
   });
   const [moreInfoForm, setMoreInfoForm] = useState({
     introduction: '',
@@ -42,7 +43,7 @@ const ProdutEditOrAddInformation = () => {
       driving: '',
     },
   });
-  console.log("rrr",productForm?.images)
+  console.log("rrr",productForm)
   const [showMoreInfo, setShowMoreInfo] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -51,6 +52,8 @@ const ProdutEditOrAddInformation = () => {
   const [brands, setBrands] = useState([]);
   const [updatedFileUrl,setUpdatedFileUrl]=useState("");
   const [updatedMultipleFileUrl,setUpdateMultipleUrl]=useState([]);
+  const [errors, setErrors] = useState({});
+
  
     const fetchProductData = async () => {
       try {
@@ -97,7 +100,53 @@ const ProdutEditOrAddInformation = () => {
     setShowMoreInfo(!showMoreInfo);
   };
 
-  const handleSaveProduct = async () => {
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!productForm.name) {
+      newErrors.name = 'Name is required';
+    }
+    if (productForm.productQuantity <= 0) {
+      newErrors.productQuantity = 'Product Quantity must be greater than 0';
+    }
+    if (productForm.price <= 0) {
+      newErrors.price = 'Price must be greater than 0';
+    }
+    if (productForm.avgRating < 1 || productForm.avgRating > 5) {
+      newErrors.avgRating = 'Average Rating must be between 1 and 5';
+    }
+    if (productForm.discountedPrice<=0) {
+      newErrors.discountedPrice = 'Discounted Price must be greater than 0';
+    }
+    if (productForm.discountedPrice >= productForm.price) {
+      newErrors.discountedPrice = 'Discounted price should be less than the original price' ;
+  }
+    if (productForm.stripCapsuleQty <= 0) {
+      newErrors.stripCapsuleQty = 'Strip Capsule Quantity must be greater than 0';
+    }
+    if (!productForm.categoryId) {
+      newErrors.categoryId = 'Category is required';
+    }
+    if (!productForm.brandId) {
+      newErrors.brandId = 'Brand is required';
+    }
+    if (!updatedFileUrl && productForm.bannerImg) {
+      newErrors.updatedFileUrl = 'Banner Image is required';
+    }
+
+    if (updatedMultipleFileUrl.length === 0) {
+      newErrors.updatedMultipleFileUrl = 'Additional Images are required';
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  
+  const handleSaveProduct = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
+
     setLoading(true);
     setError(null);
     setSuccess(null);
@@ -116,6 +165,7 @@ const ProdutEditOrAddInformation = () => {
         brandId: productForm?.brandId,
         discountedPrice: productForm?.discountedPrice,
         stripCapsuleQty: productForm?.stripCapsuleQty,
+        productQuantity:productForm?.productQuantity
       }
       await apiPUT(`/v1/product/update-product/${id}`, updateProductPayload);
       setSuccess('Product updated successfully');
@@ -219,11 +269,13 @@ const ProdutEditOrAddInformation = () => {
       console.error('Error fetching categories:', error);
     }
   };
-
+    console.log(categories)
   const fetchBrands = async (category) => {
+    
     try {
       const response = await apiGET(`/v1/brand/get-by-category/${category}`);
       if (response?.data?.data?.length) {
+        console.log(response,"dsfds")
         setBrands(
           response?.data?.data?.map((brand) => ({
             key: brand?.id,
@@ -231,12 +283,16 @@ const ProdutEditOrAddInformation = () => {
             text: brand?.name,
           }))
         );
-      } else {
+      }
+     
+       else {
         setBrands([]);
       }
     } catch (error) {
       console.error('Error fetching brands:', error);
     }
+    console.log(brands,'fgf')
+   
   };
 
   const handleCategoryChange = (e, { value }) => {
@@ -260,7 +316,10 @@ useEffect(()=>{
 
   useEffect(() => {
     fetchCategories();
-  }, []);
+    fetchBrands(productForm?.categoryId)
+    // fetchBrands(productForm?.id)
+   
+  }, [productForm?.categoryId ]);
   
 
   if (loading) {
@@ -275,14 +334,30 @@ useEffect(()=>{
           name='name'
           value={productForm?.name}
           onChange={handleProductChange}
+          error={errors.name ? { content: errors.name, pointing: 'below' } : null}
         />
+         {errors.name && <Message error content={errors.name} />}
+
+        <Form.Input
+            label='Product Quantity'
+            name='productQuantity'
+            type='number'
+            value={productForm.productQuantity}
+            onChange={handleProductChange}
+            error={errors.productQuantity ? { content: errors.productQuantity, pointing: 'below' } : null}
+          />
+       {errors.productQuantity && <Message error content={errors.productQuantity} />}
+
         <Form.Input
           label='Ratings'
           name='avgRating'
           type='number'
           value={productForm?.avgRating}
           onChange={handleProductChange}
+          error={errors.avgRating ? { content: errors.avgRating, pointing: 'below' } : null}
         />
+       {errors.avgRating && <Message error content={errors.avgRating} />}
+
         <Form.Checkbox
           label='Prescription'
           name='isPrescription'
@@ -295,15 +370,21 @@ useEffect(()=>{
           type='number'
           value={productForm?.price}
           onChange={handleProductChange}
+          error={errors.price ? { content: errors.price, pointing: 'below' } : null}
         />
+        {errors.price && <Message error content={errors.price} />}
+
         <div className='my-4'>
         <lable>Banner Img</lable>
         <FileUpdateInput myFileUrl={productForm?.bannerImg} setUpdatedFileUrl = {setUpdatedFileUrl}/>
+        {errors.updatedFileUrl && <div className='text-red-500 mt-1'>{errors.updatedFileUrl}</div>}
         </div>
         <div className='my-4'>
         <lable>Images</lable>
         <MultipleFileUpdateInput myFileUrls={productForm?.images} setUpdateMultipleUrl = {setUpdateMultipleUrl}/>
         </div>
+        {errors.updatedMultipleFileUrl && <div className='text-red-500 mt-1'>{errors.updatedMultipleFileUrl}</div>}
+
         <Form.Input
           label='Marketer'
           name='marketer'
@@ -333,6 +414,7 @@ useEffect(()=>{
             value={productForm?.categoryId}
             onChange={handleCategoryChange}
           />
+        {errors.categoryId && <div className='text-red-500'>{errors.categoryId}</div>}
         </Form.Field>
 
         <Form.Field>
@@ -345,14 +427,15 @@ useEffect(()=>{
             value={productForm?.brandId}
             onChange={handleBrandChange}
           />
+        {errors.brandId && <div className='text-red-500' >{errors.brandId}</div>}
         </Form.Field>
-
         <Form.Input
           label='Discounted Price'
           name='discountedPrice'
           type='number'
           value={productForm?.discountedPrice}
           onChange={handleProductChange}
+          error={errors.discountedPrice ? { content: errors.discountedPrice, pointing: 'below' } : null}          
         />
         <Form.Input
           label='Strip Capsule Quantity'
@@ -360,8 +443,9 @@ useEffect(()=>{
           type='number'
           value={productForm?.stripCapsuleQty}
           onChange={handleProductChange}
+          error={errors.stripCapsuleQty ? { content: errors.stripCapsuleQty, pointing: 'below' } : null}
         />
-
+      {errors.stripCapsuleQty && <Message error content={errors.stripCapsuleQty} />}
         <Button primary onClick={handleSaveProduct}>Save Product</Button>
         <Button onClick={handleAddMoreInfo}>{showMoreInfo ? 'Hide More Info' : 'Add Or Update More Info'}</Button>
 
@@ -457,9 +541,9 @@ useEffect(()=>{
             <Button primary onClick={handleSaveMoreInfo}>Save More Info</Button>
           </Segment>
         )}
-
+{/* 
         <Message error content={error} />
-        <Message success content={success} />
+        <Message success content={success} /> */}
       </Form>
     </div>
   );

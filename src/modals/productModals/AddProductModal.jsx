@@ -7,19 +7,19 @@ import { toast } from 'react-toastify';
 
 const initialFormData = {
   name: '',
-  avgRating: 0,
+  avgRating: null,
   isPrescription: false,
-  price: 0,
+  price: null,
   bannerImg: '',
   marketer: '',
   saltComposition: '',
   origin: '',
   categoryId: '',
   images: [],
-  discountedPrice: 0,
+  discountedPrice: null,
   brandId: '',
-  stripCapsuleQty: 0,
-  productQuantity: 0
+  stripCapsuleQty: null,
+  productQuantity: null
 };
 
 const AddProductModal = ({ open, onClose, refreshProducts }) => {
@@ -84,6 +84,8 @@ const AddProductModal = ({ open, onClose, refreshProducts }) => {
   };
 
   const validateForm = () => {
+    console.log("qqq",formData.discountedPrice, formData.price)
+    console.log("TT",formData.discountedPrice >= formData.price)
     const newErrors = {};
     if (!formData.name) {
       newErrors.name = 'Name is required';
@@ -100,6 +102,9 @@ const AddProductModal = ({ open, onClose, refreshProducts }) => {
     if (formData.discountedPrice<=0) {
       newErrors.discountedPrice = 'Discounted Price must be greater than 0';
     }
+    if (formData.discountedPrice >= formData.price) {
+      newErrors.discountedPrice = 'Discounted price should be less than the original price' ;
+  }
     if (formData.stripCapsuleQty <= 0) {
       newErrors.stripCapsuleQty = 'Strip Capsule Quantity must be greater than 0';
     }
@@ -114,6 +119,9 @@ const AddProductModal = ({ open, onClose, refreshProducts }) => {
     }
     if (uploadMultipleUrl.length === 0) {
       newErrors.uploadMultipleUrl = 'Additional Images are required';
+    }
+    if (uploadMultipleUrl.length > 4) {
+      newErrors.uploadMultipleUrl = 'You can upload a maximum of four additional images.';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -279,7 +287,6 @@ const AddProductModal = ({ open, onClose, refreshProducts }) => {
             onChange={handleChange}
             error={errors.discountedPrice ? { content: errors.discountedPrice, pointing: 'below' } : null}
           />
-          {errors.discountedPrice && <Message error content={errors.discountedPrice} />}
 
           <Form.Input
             label='Strip Capsule Qty'

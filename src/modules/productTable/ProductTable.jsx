@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Table, Button, Pagination, Loader } from 'semantic-ui-react';
+import { Table, Button, Pagination, Loader, Input } from 'semantic-ui-react';
 import DeleteProductModal from '../../modals/productModals/DeleteProductModal';
 import { useNavigate } from 'react-router-dom';
 
-const ProductTable = ({ products, onAddProductClick, currentPage, totalPages, onPageChange, loading,fetchProducts }) => {
+const ProductTable = ({ products, onAddProductClick, currentPage, totalPages, onPageChange, loading,fetchProducts,searchQuery,handleSearch }) => {
     const navigate = useNavigate()
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
@@ -21,7 +21,8 @@ const ProductTable = ({ products, onAddProductClick, currentPage, totalPages, on
 
     return (
         <div className='w-full px-4'>
-            <div className='flex justify-end mt-4'>
+            <div className='flex justify-between items-center mt-4'>
+            <div><Input placeholder="Serach by product name " value={searchQuery} onChange={handleSearch}/></div>
                 <Button primary onClick={onAddProductClick}>Add Product</Button>
             </div>
 

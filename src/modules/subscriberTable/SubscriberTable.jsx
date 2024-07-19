@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Table, Button, Pagination, Loader } from 'semantic-ui-react';
+import { Table, Button, Pagination, Loader, Input } from 'semantic-ui-react';
 import DeleteBrandsModal from '../../modals/brandsModal/DeleteBrandsModal';
 import UpdateBrandsModal from '../../modals/brandsModal/UpdateBrandsModal';
 import DeleteSubscriberModal from '../../modals/subscriberModal/DeleteSubscriberModal';
 import UpdateSubscriberModal from '../../modals/subscriberModal/UpdateSubscriberModal';
 
-const SubscriberTable = ({ subscribers, onAddSubscriber, currentPage, totalPages, onPageChange, loading, fetchSubscriber,subscribed ,handleToggle}) => {
+const SubscriberTable = ({ subscribers, onAddSubscriber, currentPage, totalPages, onPageChange, loading, fetchSubscriber,subscribed ,handleToggle,seacrhQuery,handleSearch}) => {
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [updateModalOpen, setUpdateModalOpen] = useState(false);
     const [selectedSubscriber, setSelectedSubscriber] = useState(null);
@@ -34,7 +34,9 @@ const SubscriberTable = ({ subscribers, onAddSubscriber, currentPage, totalPages
 
     return (
         <div className='w-full px-4'>
-            <div className='flex justify-between items-center mt-4'>
+            <div className='flex  gap-5 items-center mt-4'>
+            <div><Input placeholder="Serach by name or email" value={seacrhQuery} onChange={handleSearch}/></div>
+               <div className='w-full items-center flex justify-between'>
                 <label className="relative inline-flex items-center cursor-pointer">
                     <input
                         type="checkbox"
@@ -47,9 +49,9 @@ const SubscriberTable = ({ subscribers, onAddSubscriber, currentPage, totalPages
                         {subscribed ? 'Unsubscribers' : 'Subscribers'}
                     </span>
                 </label>
-                <Button primary onClick={onAddSubscriber}>Add Subscriber</Button>
+                <Button className='' primary onClick={onAddSubscriber}>Add Subscriber</Button>
             </div>
-
+            </div>
             <Table celled>
                 <Table.Header>
                     <Table.Row>

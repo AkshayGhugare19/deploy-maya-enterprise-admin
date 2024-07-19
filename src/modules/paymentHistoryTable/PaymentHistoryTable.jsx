@@ -1,12 +1,12 @@
 import moment from 'moment';
 import React, { useState } from 'react';
-import { Table, Button, Pagination, Loader } from 'semantic-ui-react';
+import { Table, Button, Pagination, Loader, Input } from 'semantic-ui-react';
 
-const PaymentHistoryTable = ({ paymentHistory, currentPage, totalPages, onPageChange, loading }) => {
+const PaymentHistoryTable = ({ paymentHistory, currentPage, totalPages, onPageChange, loading ,seacrhQuery,handleSearch}) => {
 
     return (
         <div className='w-full p-4'>
-            
+          <div><Input placeholder="Serach by name or email" value={seacrhQuery} onChange={handleSearch}/></div>
             <Table celled>
                 <Table.Header>
                     <Table.Row>
