@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { MdClose } from "react-icons/md";
 import { uploadPost } from "../../utils/apiHelper";
+import { toast } from "react-toastify";
 
 const FileUpdateInput = ({ myFileUrl, setUpdatedFileUrl }) => {
     const [imageUrl, setImageUrl] = useState(myFileUrl || "");
@@ -19,6 +20,11 @@ const FileUpdateInput = ({ myFileUrl, setUpdatedFileUrl }) => {
             let file = acceptedFiles[0];
             if (!file) return;
             if (file) {
+                const fileType = file.type;
+                if (!fileType.startsWith("image/")) {
+                    toast.error("Please select an image file");
+                    return;
+                }
                 const reader = new FileReader();
                 reader.onload = () => {
                     // setImageUrl(reader.result);
@@ -34,7 +40,7 @@ const FileUpdateInput = ({ myFileUrl, setUpdatedFileUrl }) => {
     }, []);
 
     const { getRootProps, getInputProps } = useDropzone({
-        accept: ".png, .jpg, .jpeg",
+        accept: "image/*",
         maxFiles: 1,
         onDrop,
     });

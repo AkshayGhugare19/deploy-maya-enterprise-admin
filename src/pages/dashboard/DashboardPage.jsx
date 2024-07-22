@@ -120,7 +120,7 @@ const DashboardPage = () => {
               </Card>
             )}
           </Grid.Column>
-          <Grid.Column>
+          {/* <Grid.Column>
             <Card className='shadow-lg' fluid>
               <Card.Content>
                 <Statistic>
@@ -129,7 +129,7 @@ const DashboardPage = () => {
                 </Statistic>
               </Card.Content>
             </Card>
-          </Grid.Column>
+          </Grid.Column> */}
         </Grid.Row>
       </Grid>
       <Divider section />
@@ -188,6 +188,9 @@ const MonthlyEarnings = () => {
     </Segment>
   );
 };
+const camelCaseToWords = (str) => {
+  return str.replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ return str.toUpperCase(); });
+};
 
 const MonthlyDataInfoChart = ({ dashboardData }) => {
   const colors = {
@@ -202,7 +205,7 @@ const MonthlyDataInfoChart = ({ dashboardData }) => {
   };
 
   const data = Object.keys(dashboardData).map(key => ({
-    name: key,
+    name: camelCaseToWords(key),
     count: dashboardData[key],
     fill: colors[key] || '#8884d8',
   }));

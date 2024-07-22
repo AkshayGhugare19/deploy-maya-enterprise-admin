@@ -30,14 +30,21 @@ const AddProductModal = ({ open, onClose, refreshProducts }) => {
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [errors, setErrors] = useState({});
-  console.log("eRR",errors)
-  
+  console.log("eRR", errors)
+
 
   const fetchCategories = async () => {
     try {
-      const response = await apiGET('/v1/category/all');
-      if (response?.data?.data?.length) {
-        setCategories(response.data.data.map(category => ({
+      const payload = {
+        page: 1,
+        limit: 10,
+        searchQuery: ""
+      }
+
+      const response = await apiPOST('/v1/category/all', payload);
+      console.log(response?.data?.data);
+      if (response?.data?.data?.categories?.length) {
+        setCategories(response.data?.data?.categories?.map(category => ({
           key: category.id,
           value: category.id,
           text: category.name
@@ -84,8 +91,8 @@ const AddProductModal = ({ open, onClose, refreshProducts }) => {
   };
 
   const validateForm = () => {
-    console.log("qqq",formData.discountedPrice, formData.price)
-    console.log("TT",formData.discountedPrice >= formData.price)
+    console.log("qqq", formData.discountedPrice, formData.price)
+    console.log("TT", formData.discountedPrice >= formData.price)
     const newErrors = {};
     if (!formData.name) {
       newErrors.name = 'Name is required';
@@ -99,12 +106,12 @@ const AddProductModal = ({ open, onClose, refreshProducts }) => {
     if (formData.avgRating < 1 || formData.avgRating > 5) {
       newErrors.avgRating = 'Average Rating must be between 1 and 5';
     }
-    if (formData.discountedPrice<=0) {
+    if (formData.discountedPrice <= 0) {
       newErrors.discountedPrice = 'Discounted Price must be greater than 0';
     }
-    if (formData.discountedPrice >= formData.price) {
-      newErrors.discountedPrice = 'Discounted price should be less than the original price' ;
-  }
+    if (parseFloat(formData.discountedPrice) >= parseFloat(formData.price)) {
+      newErrors.discountedPrice = 'Discounted price should be less than the original price';
+    }
     if (formData.stripCapsuleQty <= 0) {
       newErrors.stripCapsuleQty = 'Strip Capsule Quantity must be greater than 0';
     }
@@ -274,7 +281,7 @@ const AddProductModal = ({ open, onClose, refreshProducts }) => {
               options={brands}
               value={formData.brandId}
               onChange={handleBrandChange}
-              
+
             />
             {errors.brandId && <div className='text-red-500' >{errors.brandId}</div>}
           </Form.Field>

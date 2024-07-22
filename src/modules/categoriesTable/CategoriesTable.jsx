@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { Table, Button, Pagination, Loader, Input } from 'semantic-ui-react';
 import DeleteCategoriesModal from '../../modals/categoriesModals/DeleteCategoriesModal';
 import UpdateCategoriesModal from '../../modals/categoriesModals/UpdateCategoriesModal';
+import moment from 'moment';
 
-const CategoriesTable = ({ categories, onAddCategoriesClick, currentPage, totalPages, onPageChange, loading,fetchCategories,searchQuery,handleSearch }) => {
+const CategoriesTable = ({ categories, onAddCategoriesClick, currentPage, totalPages, onPageChange, loading, fetchCategories, searchQuery, handleSearch }) => {
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [updateModalOpen, setUpdateModalOpen] = useState(false);
     const [selectedCategories, setSelectedCategories] = useState(null);
@@ -32,7 +33,7 @@ const CategoriesTable = ({ categories, onAddCategoriesClick, currentPage, totalP
     return (
         <div className='w-full px-4'>
             <div className='flex justify-between items-center mt-4'>
-            <div><Input placeholder="Serach by name or phone number " value={searchQuery} onChange={handleSearch}/></div>
+                <div><Input placeholder="Serach by name or phone number " value={searchQuery} onChange={handleSearch} /></div>
 
                 <Button primary onClick={onAddCategoriesClick}>Add Categories</Button>
             </div>
@@ -42,7 +43,7 @@ const CategoriesTable = ({ categories, onAddCategoriesClick, currentPage, totalP
                     <Table.Row>
                         <Table.HeaderCell>Name</Table.HeaderCell>
                         <Table.HeaderCell>Description</Table.HeaderCell>
-                        <Table.HeaderCell>Active</Table.HeaderCell>
+                        <Table.HeaderCell>Created At</Table.HeaderCell>
                         <Table.HeaderCell>Actions</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
@@ -60,11 +61,15 @@ const CategoriesTable = ({ categories, onAddCategoriesClick, currentPage, totalP
                             <Table.Row key={item.id}>
                                 <Table.Cell>{item.name}</Table.Cell>
                                 <Table.Cell>{item.description}</Table.Cell>
-                                <Table.Cell>{item.active?"Active":"Not Active"}</Table.Cell>
+                                <Table.Cell>{moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}</Table.Cell>
                                 <Table.Cell>
-                                    <Button positive icon='edit' onClick={()=>handleUpdateCategories(item)} />
+                                <div style={{ display: 'flex', justifyContent: '' }}>
+                                    <Button positive icon='edit' onClick={() => handleUpdateCategories(item)} />
                                     <Button negative icon='delete' onClick={() => handleDeleteCategories(item)} />
+                                </div>
                                 </Table.Cell>
+                               
+
                             </Table.Row>
                         )) : (
                             <Table.Row>
